@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "projeto-final-ml"
+version = "0.1.0"
+description = ""
+authors = ["DanielFreitassc <danielfreitassc@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+pandas = "^2.2.3"
+scikit-learn = "^1.5.2"
+streamlit = "^1.40.1"
+matplotlib = "^3.9.2"
+seaborn = "^0.13.2"
+statsmodels = "^0.14.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
