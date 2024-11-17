@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previsão de Consumo de Combustível</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        function enviarDados() {
+            const engineSize = document.getElementById("engine_size").value;
+            const cylinders = document.getElementById("cylinders").value;
+            const fuel = document.getElementById("fuel").value;
+
+            if (!engineSize || !cylinders || !fuel) {
+                alert("Por favor, preencha todos os campos!");
+                return;
+            }
+
+            const data = {
+                engine_size: parseFloat(engineSize),
+                cylinders: parseInt(cylinders),
+                fuel: fuel
+            };
+
+            fetch('http://127.0.0.1:8080/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.error || "Erro desconhecido");
+                    });
+                }
+                return response.json();
+            })
+            .then(result => {
+                let output = "<h3>Resultados de Consumo (km/L):</h3><ul>";
+                for (const [model, consumo] of Object.entries(result)) {
+                    output += `<li><strong>${model}:</strong> ${consumo}</li>`;
+                }
+                output += "</ul>";
+                document.getElementById("resultados").innerHTML = output;
+            })
+            .catch(error => {
+                console.error("Erro ao fazer a solicitação:", error);
+                alert(`Erro: ${error.message}`);
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Previsão de Consumo de Combustível</h1>
+    
+    <div>
+        <label for="engine_size">Tamanho do Motor (L):</label>
+        <input type="number" id="engine_size" placeholder="Exemplo: 2.5" step="0.1" required>
+    </div>
+
+    <div>
+        <label for="cylinders">Cilindrada:</label>
+        <select id="cylinders" required>
+            <option value="">Selecione</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="10">10</option> 
+            <option value="12">12</option> 
+        </select>
+    </div>
+
+    <div>
+        <label for="fuel">Tipo de Combustível:</label>
+        <select id="fuel" required>
+            <option value="">Selecione</option>
+            <option value="Gasolina Comum">Gasolina Comum</option>
+            <option value="Gasolina Premium">Gasolina Premium</option>
+            <option value="Etanol">Etanol</option>
+            <option value="Gás Natural">Gás Natural</option>
+            <option value="Diesel">Diesel</option>
+        </select>
+    </div>
+
+    <div>
+        <button onclick="enviarDados()">Prever Consumo</button>
+    </div>
+
+    <div id="resultados"></div>
+</body>
+</html>
