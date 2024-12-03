@@ -1,11 +1,11 @@
 FROM python:3.11-slim
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 RUN pip install Flask flask-cors scikit-learn pandas joblib
-
-COPY . .
+COPY modelos.pkl .
+COPY controller.py .
 
 EXPOSE 8080
 
-CMD ["python", "modelo_final.py"]
+CMD ["python", "controller.py"]
